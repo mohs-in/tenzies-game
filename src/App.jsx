@@ -1,23 +1,20 @@
 import { React, useState } from 'react'
+import Die from '../components/Die.jsx'
 import './App.css'
 
 function App() {
 
+  let numArr = []
+  for(let i=0;i<10;i++) {
+    numArr.push(Math.floor(Math.random()*6+1))
+  }
+    
   return (
-    <>
-      <main>
-            <Die value="1" />
-            <Die value="3" />
-            <Die value="1" />
-            <Die value="2" />
-            <Die value="5" />
-            <Die value="1" />
-            <Die value="3" />
-            <Die value="1" />
-            <Die value="6" />
-            <Die value="1" />
-        </main>
-    </>
+    <main>
+      <div className='die-container'>
+        {numArr.map(num => <Die value={num} />)}
+      </div>
+    </main>
   )
 }
 
