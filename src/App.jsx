@@ -5,35 +5,48 @@ import './App.css'
 
 function App() {
 
-  const [die, setDie] = useState(getNewDie());
-  const [isTrue, setIsTrue] = useState({id:'',value:false});
-  function getNewDie() {
+  const [dice, setDice] = useState(allNewDice());
+  const [count, setCount] = useState(0);
+  function generateNewDie() {
+    return { 
+      id:nanoid(),
+      value: Math.ceil(Math.random()*6),
+      isHeld: false 
+    }  
+  }
+
+  function allNewDice() {
     let dieArray = []
     for(let i=0;i<10;i++) {
-      dieArray.push(
-        { 
-          id:nanoid(),
-          value: Math.ceil(Math.random()*6), 
-        }        
-      )
+      dieArray.push(generateNewDie())
     }
     return dieArray
   }
 
   function rollDie() {
-    setDie(getNewDie())
+    setCount(prevCount => prevCount+1);
+    setDice(oldDice => oldDice.map(die => {
+      return die.isHeld ? 
+        die :
+        generateNewDie()
+    }))
   }
 
-  function clickHandler() {
-    setIsTrue(prevState => {prevState.id})
+  function holdDice(id) {
+    setDice(oldDice => oldDice.map(die => {
+      return die.id === id ? 
+        {...die, isHeld: !die.isHeld} :
+        die
+    }))
   }
 
-  const dieElements = die.map(obj => <Die key={obj.id} value= {obj.value} isHeld={isTrue} clickHandler={clickHandler}/>)
+  const dieElements = dice.map(die => <Die key={die.id} value={die.value} isHeld={die.isHeld} holdDice={() => holdDice(die.id)}/>)
   return (
     <main>
       <div className='die-container'>
         {dieElements}
       </div>
+      <p className='countTag'>No. of Rolls: {count}</p>
       <button onClick={rollDie} className='btn-roll'>Roll</button>
     </main>
   )
