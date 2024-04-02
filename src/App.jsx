@@ -1,4 +1,4 @@
-import { React, useState } from 'react'
+import { React, useState, useEffect } from 'react'
 import Die from '../components/Die.jsx'
 import { nanoid } from 'nanoid'
 import './App.css'
@@ -7,6 +7,19 @@ function App() {
 
   const [dice, setDice] = useState(allNewDice());
   const [count, setCount] = useState(0);
+  const [tenzies, setTenzies] = useState(false);
+
+  useEffect(() => {
+    const allHeld = dice.every(die => die.isHeld);
+    const firstValue = dice[0].value;
+    const allSameValue = dice.every(die => die.value === firstValue)
+
+    if(allHeld && allSameValue) {
+      setTenzies(true);
+      console.log('Congo.. You Won!');
+    }
+  },[dice])
+
   function generateNewDie() {
     return { 
       id:nanoid(),
@@ -49,7 +62,7 @@ function App() {
         {dieElements}
       </div>
       <p className='countTag'>No. of Rolls: {count}</p>
-      <button onClick={rollDie} className='btn-roll'>Roll</button>
+      <button onClick={rollDie} className='btn-roll'>{tenzies ? 'Reset' : 'Roll'}</button>
     </main>
   )
 }
