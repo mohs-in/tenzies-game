@@ -2,6 +2,7 @@ import { React, useState, useEffect } from 'react'
 import Die from '../components/Die.jsx'
 import { nanoid } from 'nanoid'
 import './App.css'
+import Confetti from 'react-confetti';
 
 function App() {
 
@@ -27,7 +28,7 @@ function App() {
       isHeld: false 
     }  
   }
-
+  
   function allNewDice() {
     let dieArray = []
     for(let i=0;i<10;i++) {
@@ -37,12 +38,20 @@ function App() {
   }
 
   function rollDie() {
-    setCount(prevCount => prevCount+1);
-    setDice(oldDice => oldDice.map(die => {
-      return die.isHeld ? 
-        die :
-        generateNewDie()
-    }))
+    if(!tenzies) {
+      setCount(prevCount => prevCount+1);
+      setDice(oldDice => oldDice.map(die => {
+        return die.isHeld ? 
+          die :
+          generateNewDie()
+      }))
+    } else {
+      setTenzies(false);
+      setDice(allNewDice());
+    }
+    if(tenzies) {
+      setCount(prevCount => prevCount=0)
+    }
   }
 
   function holdDice(id) {
@@ -56,13 +65,14 @@ function App() {
   const dieElements = dice.map(die => <Die key={die.id} value={die.value} isHeld={die.isHeld} holdDice={() => holdDice(die.id)}/>)
   return (
     <main>
+      {tenzies ? <Confetti /> : <></>}
       <h1 className="title">Tenzies</h1>
       <p className="instructions">Roll until all dice are the same. Click each die to freeze it at its current value between rolls.</p>
       <div className='die-container'>
         {dieElements}
       </div>
       <p className='countTag'>No. of Rolls: {count}</p>
-      <button onClick={rollDie} className='btn-roll'>{tenzies ? 'Reset' : 'Roll'}</button>
+      <button onClick={rollDie} className='btn-roll'>{tenzies ? 'New Game' : 'Roll'}</button>
     </main>
   )
 }
