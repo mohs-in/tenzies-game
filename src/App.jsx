@@ -48,9 +48,7 @@ function App() {
     } else {
       setTenzies(false);
       setDice(allNewDice());
-    }
-    if(tenzies) {
-      setCount(prevCount => prevCount=0)
+      setCount(prevCount => prevCount=0);
     }
   }
 
@@ -63,6 +61,7 @@ function App() {
   }
 
   const dieElements = dice.map(die => <Die key={die.id} value={die.value} isHeld={die.isHeld} holdDice={() => holdDice(die.id)}/>)
+  
   return (
     <main>
       {tenzies ? <Confetti /> : <></>}
